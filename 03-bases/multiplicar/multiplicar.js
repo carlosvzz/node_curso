@@ -1,5 +1,5 @@
 //requireds
-import { writeFile } from 'fs';
+const { writeFile } = require('fs');
 
 let crearArchivo = (base) => {
     return new Promise((resolve, reject) => {
@@ -9,20 +9,19 @@ let crearArchivo = (base) => {
         }
 
         let data = '';
-
         for (let i = 1; i <= 10; i++) {
             data += `$ { base } * $ { i } = $ { base * i }\n `;
         }
 
 
-        writeFile(`tablas / tabla - $ { base }.txt `, data, (err) => {
+        writeFile(`tablas/tabla-${base}.txt `, data, (err) => {
             if (err) reject(err)
             else
-                resolve(`tabla - $ { base }.txt `);
+                resolve(`tabla-${base}.txt`);
         });
     })
 }
 
-export default {
+module.exports = {
     crearArchivo
 }
