@@ -1,4 +1,5 @@
-const axios = require('axios');
+const lugar = require('./lugar/lugar');
+const clima = require('./clima/clima');
 
 const argv = require('yargs').options({
     direccion: {
@@ -8,20 +9,25 @@ const argv = require('yargs').options({
     }
 }).argv;
 
-const encodedUrl = encodeURI(argv.direccion);
+// lugar.getLugarLatLng(argv.direccion)
+//     .then(console.log);
 
-const instance = axios.create({
-    baseURL: `https://devru-latitude-longitude-find-v1.p.rapidapi.com/latlon.php?location=${encodedUrl}`,
-    headers: {
-        "x-rapidapi-host": "devru-latitude-longitude-find-v1.p.rapidapi.com",
-        "x-rapidapi-key": "1145903e6amsh3525196f9f2102ap19d54fjsne5a4e4f4611e"
+// clima.getClima(32.790001, -96.800003)
+//     .then(console.log)
+//     .catch(console.log);
+
+const getInfo = async(dir) => {
+    try {
+        const dataLugar = await lugar.getLugarLatLng(dir);
+        const temperatura = await clima.getClima(dataLugar.lat, dataLugar.lng);
+        return `El clima de ${dataLugar.direccion} es de ${temperatura} C.`;
+
+    } catch (e) {
+        return `No se pudo determina el clima de ${dir}. Error ${e}`;
+
     }
-});
+}
 
-instance.get()
-    .then(resp => {
-        console.log(resp.data.Results[0]);
-    })
-    .catch(err => {
-        console.log('ERROR!!!!!', err);
-    })
+getInfo(argv.direccion)
+    .then(console.log)
+    .catch(console.log)
